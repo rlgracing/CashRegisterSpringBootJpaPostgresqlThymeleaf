@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Cash Register</title>
+
+<!--Import Google Icon Font-->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<!--Import materialize.css-->
+<link type="text/css" rel="stylesheet" href="/materialize/css/materialize.css"  media="screen,projection"/>
+<link type="text/css" rel="stylesheet" href="/materialize/css/materialize.min.css"  media="screen,projection"/>
+
+</head>
+<body>
+<div class="row">
+	<div class="input-field col s6">
+		<form action="getProduct" method="POST">
+			<label>Product Id:</label>
+			<input name="productId">
+			<button class="btn waves-effect waves-light" type="submit" name="action">
+				Find
+		  	</button>
+		</form>	
+		<br>
+		<br>
+	</div>
+	<div class="input-field col s6">
+		<form action="addItem" method="POST">
+			<table class="striped">
+				<tr th:if="${product != null}">
+					<th>ID</th>
+					<th>DESCRIPTION</th>
+					<th>PRICE</th>
+					<th>UNIT</th>
+					<th>QTY</th>
+					<th></th>
+				</tr>
+				<tr th:if="${product != null}">
+					<td th:text="${product.id}"></td>
+					<td th:text="${product.description}"></td>
+					<td th:text="${product.price}"></td>
+					<td th:text="${product.unitType}"></td>
+					<td width="10%">
+						<input type="text" name="quantity">
+						<input type="hidden" name="productId" th:value="${product.id}">
+					</td>
+					<td>
+						<button class="btn waves-effect waves-light" type="submit">
+							Add
+		  				</button>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</div>
+
+<div class="row">
+	<div class="input-field col s6">
+		<table th:if="${items != null && items.size() > 0}" class="striped">
+			<tr>
+				<th colspan="6">ITEMS</th>
+			</tr>
+			<tr>
+				<th>ID</th>
+				<th>DESCRIPTION</th>
+				<th>PRICE</th>
+				<th>UNIT</th>
+				<th>QTY</th>
+				<th>TOTAL</th>
+			</tr>
+			<tr th:each="item : ${items}">
+				<td th:text="${item.id}"></td>
+				<td th:text="${item.description}"></td>
+				<td th:text="${item.price}"></td>
+				<td th:text="${item.unitType}"></td>
+				<td th:text="${item.quantity}"></td>
+				<td th:text="${item.total}"></td>
+			</tr>
+		</table>
+		<table th:if="${discountItems != null && discountItems.size() > 0}" class="striped">
+			<tr>
+				<th colspan="6">DISCOUNTS</th>
+			</tr>
+			<tr>
+				<th>ID</th>
+				<th>DESCRIPTION</th>
+				<th>%</th>
+				<th>QTY</th>
+				<th>TOTAL</th>
+			</tr>
+			<tr th:each="discountItem : ${discountItems}">
+				<td th:text="${discountItem.id}"></td>
+				<td th:text="${discountItem.description}"></td>
+				<td th:text="${discountItem.discountPercentage}"></td>
+				<td th:text="${discountItem.quantity}"></td>
+				<td th:text="${discountItem.total}"></td>
+			</tr>
+		</table>
+		<table th:if="${coupons != null && coupons.quantity > 0}" class="striped">
+			<tr>
+				<th colspan="6">COUPONS - PURCHASE OVER $<span th:text="${coupons.threshold}"></span></th>
+			</tr>
+			<tr>
+				<th>#</th>
+				<th>DESCRIPTION</th>
+			</tr>
+			<tr th:each="i : ${#numbers.sequence(1, coupons.quantity)}">
+				<td th:text="${i}"></td>
+				<td th:text="${coupons.moneyOff + ' DOLLARS OFF FOR THE NEXT PURCHASE'}"></td>
+			</tr>
+		</table>
+	</div>
+	<div class="input-field col s6">
+		<div class="input-field col s12">
+			<label>Sub-Total:</label>
+			<input type="text" th:value="${subTotal}" readonly>
+		</div>
+		<div class="input-field col s12">
+			<label>Total Discount:</label>
+			<input type="text" th:value="${totalDiscount}" readonly>
+		</div>
+		<div class="input-field col s12">
+			<label>Total:</label>
+			<input type="text" th:value="${total}" readonly>
+		</div>
+		<div class="input-field col s12">
+			<label>Coupons:</label>
+			<input type="text" th:value="${coupons.quantity}" readonly>
+		</div>
+		<div class="input-field col s12">
+			<a class="btn waves-effect waves-light" href="/">Finish</a>
+			<!-- <a class="btn waves-effect waves-light" href="/">Exit</a> -->
+		</div>
+	</div>
+</div>
+	
+<!--JavaScript at end of body for optimized loading-->
+<script type="text/javascript" src="/materialize/js/materialize.js"></script>
+<script type="text/javascript" src="/materialize/js/materialize.min.js"></script>
+
+</body>
+</html>
